@@ -3,7 +3,7 @@ const socketIO = require('socket.io');
 module.exports = (server) => {
   const io = socketIO(server, {
     cors: {
-      origin: 'https://192.168.1.46:4200',
+      origin: 'https://192.168.1.7:4200',
       allowedHeaders: ['Content-Type', 'Authorization'],
       credentials: true,
       methods: ['GET', 'POST', 'PUT', 'DELETE', 'PATCH']

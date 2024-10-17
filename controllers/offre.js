@@ -1,4 +1,32 @@
-const { Offre, Utilisateur, Profile, Entreprise } = require('../models');
+require('dotenv').config();
+const { Offre, Utilisateur, Profile, Entreprise, UtilisateurOffres } = require('../models');
+const nodemailer = require('nodemailer');
+
+
+async function envoyerEmail(destinataire, sujet, message) {
+    const transporteur = nodemailer.createTransport({
+        service: 'gmail', // Utilisation de Gmail comme service de messagerie
+        auth: {
+            user: 'camardado@gmail.com', // Votre adresse email
+            pass: process.env.PASS_GMAIL // Votre mot de passe ou un mot de passe d'application
+        }
+    });
+
+    const options = {
+        from: 'camardado@gmail.com',
+        to: destinataire,
+        subject: sujet,
+        text: message,
+    };
+
+    try {
+        await transporteur.sendMail(options);
+        console.log('E-mail envoyé avec succès');
+    } catch (error) {
+        console.error('Erreur lors de l\'envoi de l\'e-mail', error);
+    }
+}
+
 
 exports.recuperer = async(req, res) => {
 
@@ -175,7 +203,7 @@ exports.modifier = async (req, res) => {
 
     try {
         
-        let offre = await Offre.findByPk(id, {where: {id, recruteurId}});
+        let offre = await Offre.findOne({where: {id, recruteurId}});
 
         if(!offre) return res.status(400).json({msn: `Aucune offre trouvée avec cet identifiant`});
 
@@ -236,11 +264,58 @@ try {
         msg: "Cette offre n'existe pas ou plus"
     });
     
-} catch (error) {
-  
-    return res.status(500).json({ msg: 'Erreur interne du serveur' });
+    } catch (error) {
+    
+        return res.status(500).json({ msg: 'Erreur interne du serveur' });
+    }
 }
-}
+
+exports.modifierCandidature = async (req, res) => {
+    const offreId = parseInt(req.params.id);
+    const candidatureDonnees = req.body.offre; // Assurez-vous que req.body.offre est correctement formaté
+    const utilisateurId = parseInt(candidatureDonnees.utilisateurId);
+    const email = req.body.email;
+    try {
+        const utilisateur = await Utilisateur.findByPk(utilisateurId);
+        const offre = await Offre.findByPk(offreId);
+
+        if (!utilisateur || !offre) {
+            return res.status(400).json({ msg: "L'utilisateur ou l'offre n'existe pas." });
+        }
+
+        const utilisateurNom = await Profile.findOne( {where: {utilisateurId: utilisateur.id}} );
+
+        const candidature = await UtilisateurOffres.findOne({
+            where: { utilisateurId, offreId }
+        });
+
+        if (!candidature) {
+            return res.status(400).json({ msg: "Aucune candidature trouvée." });
+        }
+
+        // Mise à jour de la candidature
+        await candidature.update(candidatureDonnees);
+
+        // Définir le message à envoyer par e-mail
+        let message;
+        if (candidature.statut === "accepter") {
+            message = `Votre candidature pour l'offre ${offre.titre} a été ${candidature.statut}.\n Rendez-vous dans une semaine pour votre entretien lien: https://192.168.1.7:4200/entretien?type=public&id=1&roomId=c24aafbd-f3ba-4141-ad8a-5439f2a35f75&salonNom=recrutement&user=${utilisateurNom.nom}.`;
+        } else {
+            message = `Votre candidature pour l'offre ${offre.titre} a été ${candidature.statut}.`;
+        }
+
+        const sujet = `Réponse à votre candidature pour l'offre ${offre.titre}`;
+        const destinataire = email; // L'e-mail du candidat
+
+        // Envoi de l'e-mail
+        await envoyerEmail(destinataire, sujet, message);
+
+        return res.status(200).json({ msg: "Candidature modifiée avec succès.", data: candidature });
+    } catch (error) {
+        return res.status(500).json({ msg: 'Erreur interne du serveur', error });
+    }
+};
+
 
 exports.supprimerCandidature= async (req, res) => {
     const id = parseInt(req.utilisateurId);

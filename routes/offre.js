@@ -11,5 +11,6 @@ router.put('/:id/modifier', authRequise, offreVLD.modifier, offreCTR.modifier);
 router.get('/:id/candidature', authRequise, offreCTR.candidature);
 router.delete('/:id/candidature-suppression', authRequise, offreCTR.supprimerCandidature);
 router.delete('/:id/supprimer', authRequise, offreCTR.supprimer);
+router.put('/:id/modifierCandidature', authRequise, offreCTR.modifierCandidature);
 
 module.exports = router;
