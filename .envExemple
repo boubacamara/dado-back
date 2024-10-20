@@ -1,0 +1,16 @@
+PORT = 8000
+WEBSITE_URL = http://localhost
+
+PATH_FILE  =  public/media/
+JWT_SECRET = G2gmKWczR1A2KpAoFexueP16u
+
+DB_DRIVER   = mysql
+DB_HOST     = localhost
+DB_USERNAME = root
+DB_PASSWORD = thecodeur
+DB_DATABASE = recrutement
+
+STMP_AUTH_USER = exempler@gmail.com
+STMP_AUTH_PASS = 
+
+CONFERENCE_URL = https://192.168.1.7:4200/api//entretien?type=public&id=1&roomId=c24aafbd-f3ba-4141-ad8a-5439f2a35f75&salonNom=recrutement&user=

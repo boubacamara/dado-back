@@ -1,32 +1,5 @@
 require('dotenv').config();
 const { Offre, Utilisateur, Profile, Entreprise, UtilisateurOffres } = require('../models');
-const nodemailer = require('nodemailer');
-
-
-async function envoyerEmail(destinataire, sujet, message) {
-    const transporteur = nodemailer.createTransport({
-        service: 'gmail', // Utilisation de Gmail comme service de messagerie
-        auth: {
-            user: 'camardado@gmail.com', // Votre adresse email
-            pass: process.env.PASS_GMAIL // Votre mot de passe ou un mot de passe d'application
-        }
-    });
-
-    const options = {
-        from: 'camardado@gmail.com',
-        to: destinataire,
-        subject: sujet,
-        text: message,
-    };
-
-    try {
-        await transporteur.sendMail(options);
-        console.log('E-mail envoyé avec succès');
-    } catch (error) {
-        console.error('Erreur lors de l\'envoi de l\'e-mail', error);
-    }
-}
-
 
 exports.recuperer = async(req, res) => {
 
@@ -56,6 +29,9 @@ exports.recuperer = async(req, res) => {
                 {
                     model: Utilisateur,
                     as: 'candidat',
+                    through: {
+                        attributes: ['statut']
+                    },
                     attributes: {
                         exclude: ['roleId', 'motDePasse', 'createdAt', 'updatedAt', 'UtilisateurOffres']
                     },

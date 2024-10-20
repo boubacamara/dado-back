@@ -5,6 +5,7 @@ const { authSuivi } = require('../middlewares/auth');
 const expressFileUpload = require('express-fileupload');
 const cors = require('cors');
 const path = require('path');
+const { mailNotification } = require('../core/shared/mail.notification');
 
 
 const app = express();

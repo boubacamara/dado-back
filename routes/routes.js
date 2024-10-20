@@ -7,6 +7,7 @@ const offreRTR = require('./offre');
 const categorieRTR = require('./categorie');
 const roleRTR = require('./role');
 const mediaRTR = require('./media');
+const candidatRTR = require('./candidat.action.route');
 
 route.get('', (req, res) => res.status(200).send('Hello world'));
 
@@ -16,6 +17,7 @@ route.use('/api/entreprise', entrepriseRTR);
 route.use('/api/offre', offreRTR);
 route.use('/api/categorie', categorieRTR);
 route.use('/api/role', roleRTR);
+route.use('/api/candidat', candidatRTR);
 
 route.use('/api', mediaRTR);
 
