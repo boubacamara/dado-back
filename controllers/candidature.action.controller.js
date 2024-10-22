@@ -28,7 +28,7 @@ exports.accepter = async (req, res) => {
         }
         return res.status(404).json({msg: `Veuillez réessayer plus tard, le serveur n'a pas pu répondre`})
     } catch (error) {
-        res.status(500).json({msg: 'Erreur interne du serveur'})
+        res.status(500).json({msg: 'Erreur interne du serveur', erreur: error.message})
     }
 }
 
