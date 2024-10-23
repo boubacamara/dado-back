@@ -9,10 +9,6 @@ module.exports = {
         primaryKey: true,
         type: Sequelize.INTEGER
       },
-      idEntreprise: {
-        allowNull: false,
-        type: Sequelize.INTEGER
-      },
       titre: {
         type: Sequelize.STRING,
         allowNull: false
