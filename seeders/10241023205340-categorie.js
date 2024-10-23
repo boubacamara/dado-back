@@ -4,7 +4,7 @@
 module.exports = {
   async up (queryInterface, Sequelize) {
    
-     await queryInterface.bulkInsert('Roles', [
+     await queryInterface.bulkInsert('Categories', [
       {
         intitule: 'Développement web',
         createdAt: '2024-03-23 00:23',
@@ -24,11 +24,7 @@ module.exports = {
   },
 
   async down (queryInterface, Sequelize) {
-    /**
-     * Add commands to revert seed here.
-     *
-     * Example:
-     * await queryInterface.bulkDelete('People', null, {});
-     */
+    
+    await queryInterface.bulkDelete('Categories', null, {});
   }
 };
